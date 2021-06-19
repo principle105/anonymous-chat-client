@@ -1,0 +1,26 @@
+@import "../vars.css";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  color: var(--text-primary);
+  gap: 1em;
+}
+
+.container .join_title {
+  font-size: 2rem;
+}
+
+.container .name_field {
+  padding: 0.75rem;
+  border-radius: 0.25em;
+}
+
+.container button {
+  background-color: var(--colour-main);
+  border-radius: 0.25em;
+  color: var(--text-primary);
+  padding: 0.75rem;
+}

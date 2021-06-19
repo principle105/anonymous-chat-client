@@ -1,0 +1,14 @@
+@import "../vars.css";
+
+.container {
+  padding: 1em;
+  background-color: var(--bg-secondary);
+  border-radius: 0.75em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.container .user_list {
+  text-align: center;
+}

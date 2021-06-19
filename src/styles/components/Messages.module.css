@@ -1,0 +1,51 @@
+@import "../vars.css";
+
+.container {
+  flex: 1;
+  overflow-y: auto;
+  color: black;
+}
+
+.msg {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 10px;
+  
+}
+
+.bubble {
+  max-width: 450px;
+  padding: 15px;
+  border-radius: 15px;
+  background: #fff;
+  font-size: 1rem;
+}
+
+.left .bubble {
+  border-bottom-left-radius: 0;
+}
+
+.right .bubble {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border-bottom-right-radius: 0;
+}
+
+.right {
+  flex-direction: row-reverse;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.info .name {
+  margin-right: 10px;
+  font-weight: bold;
+}
+.info .time {
+  font-size: 0.85em;
+}
