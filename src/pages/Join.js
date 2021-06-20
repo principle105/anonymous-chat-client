@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Chat from "../pages/Chat";
-
-import socket from "../socketConfig";
 
 import styles from "../styles/pages/Join.module.css";
 
@@ -16,14 +14,6 @@ const Join = () => {
       setSubmitted(true);
     } 
   }
-
-  useEffect(() => {
-    // Room being ended
-    socket.on("endRoom", () => {
-      // easy fix
-      window.location.reload();
-    })
-  })
 
   return (
     <>

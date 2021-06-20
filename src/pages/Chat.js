@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react"
 import ReactTypingEffect from "react-typing-effect";
-
-import socket from "../socketConfig";
+import io from "socket.io-client";
 
 import Messages from "../components/Messages";
 import SideBar from "../components/SideBar";
 import styles from "../styles/pages/Chat.module.css";
+
+let socket;
 
 const Chat = (props) => {
 
@@ -16,6 +17,8 @@ const Chat = (props) => {
   const [messages, setMessages] = useState([]);
   
   useEffect(() => { 
+
+    socket = io("http://localhost:5000");
     
     socket.emit("join", { name }, (response) => {
       setRoom(response)
@@ -31,14 +34,20 @@ const Chat = (props) => {
   useEffect(() => {
     // Listening for new messages
     socket.on("message", (message) => {
-      setMessages([...messages, message])
+      setMessages(m => [...m, message])
     })
     // Getting new room data
     socket.on("roomData", (userData) => {
       setUsers(userData)
     })
 
-  }, [messages])
+    // Room being ended
+    socket.on("endRoom", () => {
+      // easy fix
+      window.location.reload();
+    })
+
+  }, [])
 
   const sendMessage = (event) => {
     event.preventDefault()
