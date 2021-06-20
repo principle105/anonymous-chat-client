@@ -18,7 +18,7 @@ const Chat = (props) => {
   
   useEffect(() => { 
 
-    socket = io("http://localhost:5000");
+    socket = io("https://anonymous-chat-server.herokuapp.com");
     
     socket.emit("join", { name }, (response) => {
       setRoom(response)
