@@ -2,6 +2,7 @@ import React from "react";
 import styles from "../styles/components/SideBar.module.css";
 
 const SideBar = (props) => {
+  console.log(props.users)
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Users</h1>

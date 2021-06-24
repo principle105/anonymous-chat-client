@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import ReactTypingEffect from "react-typing-effect";
 import io from "socket.io-client";
+import { ENDPOINT } from "../base";
 
 import Messages from "../components/Messages";
 import SideBar from "../components/SideBar";
@@ -11,21 +12,23 @@ let socket;
 const Chat = (props) => {
 
   const { name } = props
+  const [joined, setJoined] = useState(false);
   const [room, setRoom] = useState("");
   const [users, setUsers] = useState([]);
+
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  
+
   useEffect(() => { 
 
-    socket = io("https://anonymous-chat-server.herokuapp.com");
+    socket = io(ENDPOINT);
     
     socket.emit("join", { name }, (response) => {
       setRoom(response)
+      setJoined(true)
     })
 
     return () => {
-      socket.emit("leave");
       socket.disconnect()
     }
 
@@ -43,11 +46,16 @@ const Chat = (props) => {
 
     // Room being ended
     socket.on("endRoom", () => {
-      // easy fix
-      window.location.reload();
+      setMessage("");
+      setMessages([]);
+      setUsers([]);
+      socket.emit("join", { name }, (response) => {
+        setRoom(response)
+        setJoined(true)
+      })
     })
 
-  }, [])
+  }, [name])
 
   const sendMessage = (event) => {
     event.preventDefault()
@@ -66,7 +74,7 @@ const Chat = (props) => {
             author={name}
           />
 
-          {users.length < 2 ? (
+          {users.length < 2 && !joined ? (
             <div className={styles.waiting_msg}>
               <ReactTypingEffect
                 typingDelay={100}
