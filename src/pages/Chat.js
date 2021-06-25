@@ -22,8 +22,6 @@ const Chat = (props) => {
     socket.emit("leaveRoom")
   }
 
-  console.log(ENDPOINT)
-
   useEffect(() => { 
 
     socket = io(ENDPOINT);
