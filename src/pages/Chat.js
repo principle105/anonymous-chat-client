@@ -12,12 +12,17 @@ let socket;
 const Chat = (props) => {
 
   const { name } = props
-  const [joined, setJoined] = useState(false);
   const [room, setRoom] = useState("");
   const [users, setUsers] = useState([]);
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+
+  const skipRoom = () => {
+    socket.emit("leaveRoom")
+  }
+
+  console.log(ENDPOINT)
 
   useEffect(() => { 
 
@@ -25,7 +30,6 @@ const Chat = (props) => {
     
     socket.emit("join", { name }, (response) => {
       setRoom(response)
-      setJoined(true)
     })
 
     return () => {
@@ -47,11 +51,14 @@ const Chat = (props) => {
     // Room being ended
     socket.on("endRoom", () => {
       setMessage("");
-      setMessages([]);
+      setRoom("");
+    })
+
+    socket.on("joinNew", () => {
       setUsers([]);
+      setMessages([]);
       socket.emit("join", { name }, (response) => {
         setRoom(response)
-        setJoined(true)
       })
     })
 
@@ -74,7 +81,7 @@ const Chat = (props) => {
             author={name}
           />
 
-          {users.length < 2 && !joined ? (
+          {users.length < 2 ? (
             <div className={styles.waiting_msg}>
               <ReactTypingEffect
                 typingDelay={100}
@@ -86,16 +93,17 @@ const Chat = (props) => {
               />
             </div>
           ) : (
-            <input
+            <textarea
               className={styles.chat_input}
               placeholder="Enter your message..."
               value={message}
               onChange={(event) => setMessage(event.target.value)}
               onKeyPress={event => event.key === "Enter" ? sendMessage(event) : null}>
-          </input>
+          </textarea>
           )}
         </div>
         <SideBar 
+          skipRoom={skipRoom}
           users={users}
         />
       </div>

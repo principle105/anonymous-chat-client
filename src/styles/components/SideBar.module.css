@@ -1,14 +1,44 @@
 @import "../vars.css";
 
-.container {
+.container, .content {
   padding: 1em;
+}
+
+.container {
   background-color: var(--bg-secondary);
   border-radius: 0.75em;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 0.5em;
 }
 
 .container .user_list {
   text-align: center;
+}
+
+.container .btns {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+}
+
+.container .btns > button{
+  padding: 0.75em;
+  width: 100%;
+  border-radius: 4px;
+  transition: filter 200ms;
+  color: var(--text-primary);
+}
+
+.container .btns > button:hover{
+  filter: brightness(120%);
+}
+
+.skip_btn {
+  background-color: var(--colour-main);
+}
+
+.leave_btn {
+  background-color: var(--colour-secondary);
 }
