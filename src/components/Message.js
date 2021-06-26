@@ -1,5 +1,6 @@
 import React from "react"
 import styles from "../styles/components/Messages.module.css"
+import Image from "./Image";
 
 const Message = (props) => {
   const { msg, author, index } = props;
@@ -11,6 +12,12 @@ const Message = (props) => {
           <p className={styles.time}>Time</p>
         </div>
         <p>{msg.text}</p>
+        {msg.file ? (
+         <Image 
+          fileName={msg.file}
+          blob={new Blob([msg.file.data], { type: msg.file.type })}
+         />
+        ) : null}
       </div>
     </div>
   )

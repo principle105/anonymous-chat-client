@@ -41,12 +41,12 @@
   background: transparent;
   padding: 0.2em 0.5em;
   font-size: 2rem;
-  transition: filter 200ms ease;
+  transition: filter 300ms ease;
   cursor: pointer;
 }
 
 .icon:hover {
-  filter: brightness(120%);
+  filter: brightness(130%);
 }
 
 .chat_bar .chat_input {

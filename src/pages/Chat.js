@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import ReactTypingEffect from "react-typing-effect";
 import io from "socket.io-client";
 import { ENDPOINT } from "../base";
@@ -16,12 +16,15 @@ const Chat = (props) => {
   const [room, setRoom] = useState("");
   const [users, setUsers] = useState([]);
 
+  const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
   const [typingData, setTypingData] = useState({});
 
   const [typing, setTyping] = useState(false);
+
+  const inputFile = useRef(null) 
 
   const skipRoom = () => {
     socket.emit("leaveRoom")
@@ -54,6 +57,7 @@ const Chat = (props) => {
     // Room being ended
     socket.on("endRoom", () => {
       setMessage("");
+      setFile();
       setRoom("");
     })
 
@@ -92,9 +96,29 @@ const Chat = (props) => {
 
   const sendMessage = (event) => {
     event.preventDefault()
-    if (message) {
-      socket.emit("sendMessage", message, () => setMessage(""))
+    if (message || file) {
+      let fileObj;
+      if (file) {
+        fileObj = {data: file, type: file.type, name: file.name}
+      } else {
+        fileObj = null;
+      }
+      
+      socket.emit("sendMessage", {text: message, file: fileObj}, () => {
+        setMessage("");
+        setFile();
+      })
     }
+  }
+
+  const selectFile = (e) => {
+    const fileData = e.target.files[0]
+    if (fileData.size > 250000) 
+      return
+    if (!(fileData.name.match(/.(jpg|jpeg|png|gif)$/i))) 
+      return
+
+    setFile(e.target.files[0]);
   }
 
   return (
@@ -125,10 +149,15 @@ const Chat = (props) => {
                   className={styles.chat_input}
                   placeholder="Enter your message..."
                   value={message}
+                  ref={ref => ref && ref.focus()}
+                  onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
                   onChange={(event) => setMessage(event.target.value)}
                   onKeyPress={event => event.key === "Enter" ? sendMessage(event) : null}>
                 </textarea>
-                <button className={styles.icon}>+</button>
+                <input type="file" onChange={selectFile} ref={inputFile} style={{display: "none"}} />
+                <button className={styles.icon} onClick={() => inputFile.current.click()}>
+                  {file ? "🖼️": "📂"}
+                </button>
                 <EmojiSelector 
                   setMessage={setMessage}
                 />
