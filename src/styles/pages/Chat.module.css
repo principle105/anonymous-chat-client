@@ -24,7 +24,7 @@
 }
 
 .main .chat {
-  padding: 1em;
+  padding: 1em 1em 0 1em;
   border-radius: 0.75em;
   background-color: var(--bg-secondary);
   width: 100%;
@@ -33,7 +33,24 @@
   justify-content: space-between;
 }
 
-.chat_input {
+.chat_bar {
+  display: flex;
+}
+
+.icon {
+  background: transparent;
+  padding: 0.2em 0.5em;
+  font-size: 2rem;
+  transition: filter 200ms ease;
+  cursor: pointer;
+}
+
+.icon:hover {
+  filter: brightness(120%);
+}
+
+.chat_bar .chat_input {
+  flex-grow: 2;
   font-size: 1rem;
   line-height: 1rem;
   border-radius: 0.25em;
@@ -59,3 +76,7 @@
   color: var(--text-primary);
 }
 
+.user_typing {
+  padding: 0.5em 0 0.7em 0.3em;
+  font-size: 0.85rem;
+}

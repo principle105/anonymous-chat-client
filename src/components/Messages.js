@@ -1,22 +1,19 @@
 import React from "react"
 import ScrollToBottom from 'react-scroll-to-bottom';
+import Message from "./Message";
 import styles from "../styles/components/Messages.module.css"
 
 const MessageDisplay = (props) => {
   return (
     <ScrollToBottom className={styles.container}>
       {
-        props.messages.map((msg,i) => {
+        props.messages.map((msg,index) => {
           return (
-            <div key={i} className={`${styles.msg} ${props.author === msg.user ? styles.right : styles.left}`}>
-              <div className={styles.bubble}>
-                <div className={styles.info}>
-                  <p className={styles.name}>{msg.user}</p>
-                  <p className={styles.time}>Time</p>
-                </div>
-                <p>{msg.text}</p>
-              </div>
-            </div>
+            <Message 
+              author={props.author}
+              msg={msg}
+              key={index}
+            />
           )
         })
       }

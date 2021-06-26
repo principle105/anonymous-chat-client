@@ -5,6 +5,7 @@ import { ENDPOINT } from "../base";
 
 import Messages from "../components/Messages";
 import SideBar from "../components/SideBar";
+import EmojiSelector from "../components/EmojiSelector";
 import styles from "../styles/pages/Chat.module.css";
 
 let socket;
@@ -17,6 +18,10 @@ const Chat = (props) => {
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+
+  const [typingData, setTypingData] = useState({});
+
+  const [typing, setTyping] = useState(false);
 
   const skipRoom = () => {
     socket.emit("leaveRoom")
@@ -52,6 +57,7 @@ const Chat = (props) => {
       setRoom("");
     })
 
+    // when user joins a new room after another one ends
     socket.on("joinNew", () => {
       setUsers([]);
       setMessages([]);
@@ -60,7 +66,29 @@ const Chat = (props) => {
       })
     })
 
+    // When another user's typing status changes
+    socket.on("sendTypingData", ({name, typing}) => {
+      setTypingData(t =>({...t, [name] : typing}))
+    })
+
   }, [name])
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (typing === true) {
+        socket.emit("typingData", { name, typing: false })
+      }
+      setTyping(false);
+    }, 3000)
+
+    return () => {
+      clearTimeout(timeoutId)
+      if (typing === false) {
+        socket.emit("typingData", { name, typing: true })
+      }
+      setTyping(true);
+    }
+  }, [message])
 
   const sendMessage = (event) => {
     event.preventDefault()
@@ -91,13 +119,35 @@ const Chat = (props) => {
               />
             </div>
           ) : (
-            <textarea
-              className={styles.chat_input}
-              placeholder="Enter your message..."
-              value={message}
-              onChange={(event) => setMessage(event.target.value)}
-              onKeyPress={event => event.key === "Enter" ? sendMessage(event) : null}>
-          </textarea>
+            <>
+              <div className={styles.chat_bar}>
+                <textarea
+                  className={styles.chat_input}
+                  placeholder="Enter your message..."
+                  value={message}
+                  onChange={(event) => setMessage(event.target.value)}
+                  onKeyPress={event => event.key === "Enter" ? sendMessage(event) : null}>
+                </textarea>
+                <button className={styles.icon}>+</button>
+                <EmojiSelector 
+                  setMessage={setMessage}
+                />
+              </div>
+              <div className={styles.user_typing}>
+                {Object.keys(typingData).length < 1 ? (
+                  <p style={{opacity: 0}}>-</p>
+                ) : (
+                  Object.keys(typingData).map((user, i) => {
+                    if (typingData[user] === true) {
+                      return <p key={i}>{user} is typing...</p>
+                    } else {
+                      return <p key={i} style={{opacity: 0}}>-</p>
+                    }
+                  })
+                )}
+                
+              </div>
+            </>
           )}
         </div>
         <SideBar 
