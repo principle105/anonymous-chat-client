@@ -2,14 +2,17 @@ import React from "react";
 import styles from "../styles/components/SideBar.module.css";
 
 const SideBar = (props) => {
+
+  const users = props.users;
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
         <h1 className={styles.title}>Users</h1>
         <div className={styles.user_list}>
           {
-            props.users.map(({name}) => {
-              return <p key={name} className={styles.user}>{name}</p>
+            users.map(({name},i) => {
+              return <p key={i} className={styles.user}>{name}</p>
             })
           }
         </div>

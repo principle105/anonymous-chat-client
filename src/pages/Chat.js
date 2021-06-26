@@ -62,12 +62,14 @@ const Chat = (props) => {
       setMessage("");
       setFile();
       setRoom("");
+      setTypingData({});
+      setTyping(false);
+      setUsers([]);
+      setMessages([]);
     })
 
     // when user joins a new room after another one ends
     socket.on("joinNew", () => {
-      setUsers([]);
-      setMessages([]);
       socket.emit("join", { name }, (response) => {
         setRoom(response)
       })
@@ -79,6 +81,8 @@ const Chat = (props) => {
     })
 
   }, [name])
+
+  console.log(users)
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -152,7 +156,7 @@ const Chat = (props) => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Chat Room ID: {room}</h1>
+      <h1 className={styles.title}>Room: {users.length < 2 ? "": room}</h1>
       <div className={styles.main}>
         <div className={styles.chat}>
           <Messages

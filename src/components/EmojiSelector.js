@@ -34,7 +34,7 @@ const EmojiSelector = (props) => {
   }, [clicked]);
 
   return (
-    <div ref={node}>
+    <div ref={node} className={styles.icon_container}>
       {clicked ? (
         <div className={styles.container}>
           <Picker onEmojiClick={addToMessage} />
@@ -42,7 +42,6 @@ const EmojiSelector = (props) => {
       ) : null}
       <button className={styles2.icon} onClick={() => setClicked(!clicked)}>😃</button>
     </div>
-    
   )
 }
 

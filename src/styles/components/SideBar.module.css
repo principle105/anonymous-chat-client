@@ -42,3 +42,9 @@
 .leave_btn {
   background-color: var(--colour-secondary);
 }
+
+@media (max-width: 600px) {
+  .container {
+    display: none;
+  }
+}
