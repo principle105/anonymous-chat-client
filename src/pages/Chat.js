@@ -8,6 +8,8 @@ import SideBar from "../components/SideBar";
 import EmojiSelector from "../components/EmojiSelector";
 import styles from "../styles/pages/Chat.module.css";
 
+import { toast } from "react-toastify" ;
+
 let socket;
 
 const Chat = (props) => {
@@ -21,8 +23,9 @@ const Chat = (props) => {
   const [messages, setMessages] = useState([]);
 
   const [typingData, setTypingData] = useState({});
-
   const [typing, setTyping] = useState(false);
+
+  const [messageCooldown, setMessageCooldown] = useState(false);
 
   const inputFile = useRef(null) 
 
@@ -95,28 +98,54 @@ const Chat = (props) => {
   }, [message])
 
   const sendMessage = (event) => {
-    event.preventDefault()
-    if (message || file) {
-      let fileObj;
-      if (file) {
-        fileObj = {data: file, type: file.type, name: file.name}
-      } else {
-        fileObj = null;
-      }
-      
-      socket.emit("sendMessage", {text: message, file: fileObj}, () => {
-        setMessage("");
-        setFile();
+    event.preventDefault();
+    if (messageCooldown) {
+      toast.error("You are sending messages too fast", {
+        toastId: "msg-to-fast"
       })
+      return
+    } else {
+      event.preventDefault()
+      if (message || file) {
+        setMessageCooldown(true);
+        if (message.length > 500) {
+          toast.error("You've surpassed the 500 character limit", {
+            toastId: "char-limit"
+          });
+          return
+        }
+        let fileObj;
+        if (file) {
+          fileObj = {data: file, type: file.type, name: file.name}
+        } else {
+          fileObj = null;
+        }
+        
+        socket.emit("sendMessage", {text: message, file: fileObj}, () => {
+          setMessage("");
+          setFile();
+        })
+        setTimeout(function(){
+          setMessageCooldown(false);
+        },1000);
+      }
     }
   }
 
   const selectFile = (e) => {
     const fileData = e.target.files[0]
-    if (fileData.size > 250000) 
+    if (fileData.size > 500000) {
+      toast.error("File size above limit of 500KB", {
+        toastId: "file-size-limit"
+      });
       return
-    if (!(fileData.name.match(/.(jpg|jpeg|png|gif)$/i))) 
+    }
+    if (!(fileData.name.match(/.(jpg|jpeg|png|gif)$/i))) {
+      toast.error("File is not an image", {
+        toastId: "file-not-image"
+      });
       return
+    }
 
     setFile(e.target.files[0]);
   }
@@ -152,7 +181,7 @@ const Chat = (props) => {
                   ref={ref => ref && ref.focus()}
                   onFocus={(e)=>e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
                   onChange={(event) => setMessage(event.target.value)}
-                  onKeyPress={event => event.key === "Enter" ? sendMessage(event) : null}>
+                  onKeyPress={e => (!e.shiftKey && e.key === "Enter") ? sendMessage(e) : null}>
                 </textarea>
                 <input type="file" onChange={selectFile} ref={inputFile} style={{display: "none"}} />
                 <button className={styles.icon} onClick={() => inputFile.current.click()}>

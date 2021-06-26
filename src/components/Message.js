@@ -4,12 +4,22 @@ import Image from "./Image";
 
 const Message = (props) => {
   const { msg, author, index } = props;
+
+  const formatDate = (date) => {
+    const h = "0" + date.getHours();
+    const m = "0" + date.getMinutes();
+  
+    return `${h.slice(-2)}:${m.slice(-2)}`
+  }
+
   return (
     <div key={index} className={`${styles.msg} ${author === msg.user ? styles.right : styles.left}`}>
       <div className={styles.bubble}>
         <div className={styles.info}>
           <p className={styles.name}>{msg.user}</p>
-          <p className={styles.time}>Time</p>
+          <p className={styles.time}>
+            {formatDate(new Date())}
+          </p>
         </div>
         <p>{msg.text}</p>
         {msg.file ? (

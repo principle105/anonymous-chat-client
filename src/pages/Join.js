@@ -3,6 +3,8 @@ import Chat from "../pages/Chat";
 
 import styles from "../styles/pages/Join.module.css";
 
+import { ToastContainer } from "react-toastify" ;
+
 const Join = () => {
   const [name, setName] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -17,6 +19,11 @@ const Join = () => {
 
   return (
     <>
+      <ToastContainer 
+        draggable={false}
+        autoClose={3000}
+        pauseOnHover={false}
+      />
       {submitted ? (
         <Chat 
           name={name}
