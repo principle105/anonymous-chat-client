@@ -3,7 +3,7 @@ import styles from "../styles/components/SideBar.module.css";
 
 const SideBar = (props) => {
 
-  const users = props.users;
+  const { users, author, skipRoom } = props;
 
   return (
     <div className={styles.container}>
@@ -12,7 +12,16 @@ const SideBar = (props) => {
         <div className={styles.user_list}>
           {
             users.map(({name},i) => {
-              return <p key={i} className={styles.user}>{name}</p>
+              return (
+                <div 
+                  key={i} 
+                  className={styles.user} 
+                  style={{
+                    opacity: name === author ? "1" : "0.6"
+                  }}>
+                  {name}
+                </div>
+              )
             })
           }
         </div>
@@ -20,7 +29,7 @@ const SideBar = (props) => {
       <div className={styles.btns}>
         <button 
           className={styles.skip_btn}
-          onClick={() => props.skipRoom()}>
+          onClick={() => skipRoom()}>
             Skip
         </button>
         <button 

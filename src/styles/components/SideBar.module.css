@@ -15,6 +15,9 @@
 
 .container .user_list {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
 }
 
 .container .btns {
@@ -26,7 +29,7 @@
 .container .btns > button{
   padding: 0.75em;
   width: 100%;
-  border-radius: 4px;
+  border-radius: 8px;
   transition: filter 200ms;
   color: var(--text-primary);
 }

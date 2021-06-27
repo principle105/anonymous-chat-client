@@ -3,18 +3,23 @@ import Chat from "../pages/Chat";
 
 import styles from "../styles/pages/Join.module.css";
 
-import { ToastContainer } from "react-toastify" ;
+import { toast, ToastContainer } from "react-toastify" ;
 
 const Join = () => {
   const [name, setName] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
   const joinAttempt = (event) => {
-    if (!name) {
-      event.preventDefault();
-    } else {
+    event.preventDefault();
+    if (!name)
+      return
+    if (name.length > 12) {
+      toast.error("Username exceeds limit of 12 characters", {
+        toastId: "invalid-username"
+      })
+      return
+    }
       setSubmitted(true);
-    } 
   }
 
   return (
@@ -27,6 +32,7 @@ const Join = () => {
       {submitted ? (
         <Chat 
           name={name}
+          goToJoin={() => setSubmitted(false)}
         />
       ) : (
         <div className={styles.container}>

@@ -14,7 +14,7 @@ let socket;
 
 const Chat = (props) => {
 
-  const { name } = props
+  const { name, goToJoin } = props
   const [room, setRoom] = useState("");
   const [users, setUsers] = useState([]);
 
@@ -27,6 +27,8 @@ const Chat = (props) => {
 
   const [messageCooldown, setMessageCooldown] = useState(false);
 
+  const [joinAttempt, setJoinAttempt] = useState(false);
+
   const inputFile = useRef(null) 
 
   const skipRoom = () => {
@@ -38,7 +40,14 @@ const Chat = (props) => {
     socket = io(ENDPOINT);
     
     socket.emit("join", { name }, (response) => {
-      setRoom(response)
+      if (response) {
+        goToJoin(false);
+        toast.error(response, {
+          toastId: "join-error"
+        });
+      } else {
+        setJoinAttempt(true);
+      }
     })
 
     return () => {
@@ -54,7 +63,8 @@ const Chat = (props) => {
     })
     // Getting new room data
     socket.on("roomData", (userData) => {
-      setUsers(userData)
+      setRoom(userData.name)
+      setUsers(userData.users)
     })
 
     // Room being ended
@@ -71,7 +81,12 @@ const Chat = (props) => {
     // when user joins a new room after another one ends
     socket.on("joinNew", () => {
       socket.emit("join", { name }, (response) => {
-        setRoom(response)
+        if (response) {
+          goToJoin(false);
+          toast.error(response, {
+            toastId: "join-error"
+          });
+        }
       })
     })
 
@@ -81,8 +96,6 @@ const Chat = (props) => {
     })
 
   }, [name])
-
-  console.log(users)
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -131,7 +144,7 @@ const Chat = (props) => {
         })
         setTimeout(function(){
           setMessageCooldown(false);
-        },1000);
+        },500);
       }
     }
   }
@@ -154,7 +167,7 @@ const Chat = (props) => {
     setFile(e.target.files[0]);
   }
 
-  return (
+  return joinAttempt ? (
     <div className={styles.container}>
       <h1 className={styles.title}>Room: {users.length < 2 ? "": room}</h1>
       <div className={styles.main}>
@@ -215,11 +228,12 @@ const Chat = (props) => {
         <SideBar 
           skipRoom={skipRoom}
           users={users}
+          author={name}
         />
       </div>
       
     </div>
-  )
+  ) : null
 }
 
-export default Chat
+export default Chat;
