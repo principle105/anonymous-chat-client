@@ -89,6 +89,7 @@
   .icon {
     text-align: center;
     font-size: 1.6rem;
+    padding: 0.1em 0.25em;
   }
 
   .waiting_msg {

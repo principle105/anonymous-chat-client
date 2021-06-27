@@ -54,7 +54,7 @@ const Chat = (props) => {
       socket.disconnect()
     }
 
-  },[name])
+  },[name, goToJoin])
 
   useEffect(() => {
     // Listening for new messages
@@ -95,7 +95,7 @@ const Chat = (props) => {
       setTypingData(t =>({...t, [name] : typing}))
     })
 
-  }, [name])
+  }, [name, goToJoin])
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {

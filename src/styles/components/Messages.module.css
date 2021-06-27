@@ -50,3 +50,7 @@
 .info .time {
   font-size: 0.85em;
 }
+
+span {
+  cursor: text;
+}

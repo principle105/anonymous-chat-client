@@ -1,6 +1,9 @@
 import React from "react"
 import styles from "../styles/components/Messages.module.css"
 import Image from "./Image";
+import renderToEmoji from "../utils/emoji";
+
+const images = require.context("../../public/emojis", true);
 
 const Message = (props) => {
   const { msg, author, index } = props;
@@ -12,6 +15,27 @@ const Message = (props) => {
     return `${h.slice(-2)}:${m.slice(-2)}`
   }
 
+  const renderEmojis = (s) => {
+    let newString = [];
+    let i = 0
+    for (const ch of s) {
+      i += 1
+      // Checking if character is an emoji
+      if (/\p{Extended_Pictographic}/u.test(ch)) {
+        let hex = ch.codePointAt(0).toString(16)
+        let img = React.createElement("img", {
+          key: i,
+          src: images(`./${hex}.svg`).default,
+          style: {width: "20px", height: "20px"}
+        }, null)
+        newString.push(img)
+      } else {
+        newString.push(ch);
+      }
+    }
+    return newString;
+  }
+
   return (
     <div key={index} className={`${styles.msg} ${author === msg.user ? styles.right : styles.left}`}>
       <div className={styles.bubble}>
@@ -21,7 +45,7 @@ const Message = (props) => {
             {formatDate(new Date())}
           </p>
         </div>
-        <p>{msg.text}</p>
+        <p>{renderToEmoji(msg.text)}</p>
         {msg.file ? (
          <Image 
           fileName={msg.file}
